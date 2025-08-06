@@ -11,8 +11,6 @@ class NotionManager:
         try:
             database = self.client.databases.query(database_id)
             
-            
-            
             return json.dumps(database, indent=2)    
         
         except Exception as e:

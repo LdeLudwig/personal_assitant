@@ -390,6 +390,7 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "notion-client" },
     { name = "requests" },
+    { name = "uvicorn" },
 ]
 
 [package.metadata]
@@ -398,6 +399,7 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.116.0" },
     { name = "notion-client", specifier = ">=2.4.0" },
     { name = "requests", specifier = ">=2.32.4" },
+    { name = "uvicorn", specifier = ">=0.35.0" },
 ]
 
 [[package]]
