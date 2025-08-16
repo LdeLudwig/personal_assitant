@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "agno>=1.7.1",
     "fastapi[standard]>=0.116.0",
+    "mcp[cli]>=1.13.0",
     "notion-client>=2.4.0",
     "requests>=2.32.4",
     "uvicorn>=0.35.0",
