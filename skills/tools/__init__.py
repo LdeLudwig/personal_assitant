@@ -1,5 +1,6 @@
-from .notion_mcp_tool import notion_mcp_tool
+from .personal_tasks_tools import create_new_tasks, list_personal_tasks
 
 __all__ = [
-    "notion_mcp_tool"
+    "create_new_tasks",
+    "list_personal_tasks"
 ]
