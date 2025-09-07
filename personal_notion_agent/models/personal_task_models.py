@@ -4,13 +4,14 @@ from typing import Optional, Literal
 
 from skills.utils.datetime_utils import ensure_sp_aware, isoformat_sp
 
+
 class PersonalTask(BaseModel):
     name: str
     priority: Optional[Literal["High", "Medium", "Low"]] = None
     relation: Optional[list[str]] = Field(default_factory=list)
-    status: Optional[Literal["Paused","Not started","In progress","Done"]] = None
-    start: str | date | datetime = None
-    end: str | date | datetime = None
+    status: Optional[Literal["Paused", "Not started", "In progress", "Done"]] = None
+    start: Optional[str | date | datetime] = None
+    end: Optional[str | date | datetime] = None
 
     @model_validator(mode="after")
     def validate_date_order(self):
@@ -31,5 +32,10 @@ class PersonalTask(BaseModel):
         if self.status:
             props["Status"] = {"status": {"name": self.status}}
         if self.start or self.end:
-            props["Date"] = {"date": {"start": isoformat_sp(self.start), "end": isoformat_sp(self.end)}}
+            props["Date"] = {
+                "date": {
+                    "start": isoformat_sp(self.start),
+                    "end": isoformat_sp(self.end),
+                }
+            }
         return {"parent": {"database_id": database_id}, "properties": props}

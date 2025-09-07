@@ -1,12 +1,25 @@
 from textwrap import dedent
 from agno.agent import Agent
-from agno.models.openrouter import OpenRouter
+from agno.team import Team
+from agno.models.google import Gemini
 
 # tools
-from skills.tools.personal_tasks_tools import (
+from skills.tools import (
     create_new_tasks,
-    list_personal_tasks
+    list_personal_tasks,
+    find_personal_task_by_title,
+    find_personal_task_by_id,
+    update_personal_task,
+    get_messages,
 )
+
+# prompts
+from .prompts import (
+    notion_agent_prompt,
+    telegram_agent_prompt,
+    coordinator_agent_prompt,
+)
+
 
 class AgentFactory:
     def __init__(self, settings):
@@ -14,50 +27,70 @@ class AgentFactory:
 
     def create_manager_agent(self):
         manager_agent = Agent(
-            model=OpenRouter(
+            name="manager",
+            model=Gemini(
                 id=self.settings.gemini_pro_model,
+                api_key=self.settings.gemini_api_key,
                 temperature=self.settings.temperature,
-                api_key=self.settings.open_router_api_key,
-                max_tokens=None
+                max_output_tokens=None,
             ),
-            instructions= dedent("""
-                Você é o Manager Agent. Sua função é entender pedidos do usuário relacionados a tarefas pessoais no Notion e, quando apropriado, usar as tools disponíveis para executar a ação pedida.
-
-                Como decidir e usar as tools:
-                - Listar tarefas
-                  - Se o usuário pedir algo como “listar/mostrar tarefas pendentes”, “em andamento” ou “o que falta fazer”, chame list_personal_tasks(filter=True) para retornar apenas Not started e In progress.
-                  - Se o usuário pedir “todas as tarefas”, chame list_personal_tasks(filter=False).
-                  - Se o usuário pedir filtros específicos, confirme os critérios (status, período, prioridade) e escolha True/False conforme o usuário quer apenas pendentes (True) ou tudo (False).
-                - Criar nova tarefa
-                  - Reúna os campos: name (obrigatório), priority (High|Medium|Low), status (Paused|Not started|In progress|Done), start e end (datas/horários), relation (lista de IDs de páginas relacionadas no Notion).
-                  - Se faltar name, faça uma pergunta para obter. Se o usuário não informar status, use “Not started” por padrão.
-                  - Converta datas para ISO 8601 sempre que possível (ex.: 2025-09-01 ou 2025-09-01T14:00:00Z). Se só houver data, use AAAA-MM-DD.
-                  - Chame create_new_tasks passando um objeto com os campos do modelo PersonalTask, por exemplo:
-                    {"name": "Pagar contas", "status": "Not started", "priority": "Medium", "start": "2025-09-05"}
-                - Pergunte antes de agir quando informações essenciais estiverem faltando.
-                - Após executar uma tool, apresente um resumo claro do resultado em português, listando campos úteis (nome, status, prioridade, período) e links/IDs quando relevantes.
-                - Não invente IDs de relação; se o usuário quiser relacionar a páginas, peça os IDs correspondentes.
-
-                Exemplos rápidos:
-                - “Quais tarefas eu tenho para hoje?” → list_personal_tasks(True) e apresente as tarefas pendentes/em andamento.
-                - “Crie uma tarefa ‘Estudar IA’ para amanhã com prioridade alta” → create_new_tasks com {"name": "Estudar IA", "status": "Not started", "priority": "High", "start": "<data de amanhã em ISO>"}.
-
-                Importante:
-                - Sempre responda em português do Brasil.
-                - Prefira usar as tools quando a intenção envolver consultar/criar tarefas no Notion.
-            """),
+            instructions=dedent(notion_agent_prompt),
             tools=[
-            list_personal_tasks,
-            create_new_tasks
+                list_personal_tasks,
+                create_new_tasks,
+                find_personal_task_by_title,
+                find_personal_task_by_id,
+                update_personal_task,
             ],
             show_tool_calls=True,
-            debug_mode=True
+            add_datetime_to_instructions=True,
+            debug_mode=True,
         )
-        
+
         return manager_agent
 
+    def create_telegram_agent(self):
+        telegram_agent = Agent(
+            model=Gemini(
+                id=self.settings.gemini_pro_model,
+                api_key=self.settings.gemini_api_key,
+                temperature=self.settings.temperature,
+                max_output_tokens=None,
+            ),
+            instructions=dedent(telegram_agent_prompt),
+            tools=[get_messages],
+            show_tool_calls=True,
+            add_datetime_to_instructions=True,
+            debug_mode=True,
+        )
+        return telegram_agent
+
+    def create_coordinator_agent(self):
+        manager_agent = self.create_manager_agent()
+        manager_agent.name = "manager"
+        manager_agent.role = ()
+
+        telegram_agent = self.create_telegram_agent()
+        telegram_agent.name = "telegram"
+        telegram_agent.role = ()
+
+        coordinator_agent = Team(
+            name="coordinator",
+            mode="coordinate",
+            model=Gemini(
+                id=self.settings.gemini_pro_model,
+                api_key=self.settings.gemini_api_key,
+                temperature=self.settings.temperature,
+                max_output_tokens=None,
+            ),
+            members=[manager_agent, telegram_agent],
+            instructions=dedent(coordinator_agent_prompt),
+        )
+
+        return coordinator_agent
+
     def get_agent(self, agent_name: str):
-        mapper={
+        mapper = {
             "manager": self.create_manager_agent,
         }
 
