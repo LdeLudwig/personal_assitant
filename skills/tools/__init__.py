@@ -7,9 +7,6 @@ from .personal_tasks_tools import (
     update_personal_task,
 )
 
-# Telegram
-from .telegram_tools import get_messages
-
 
 __all__ = [
     # Personal tasks tools
@@ -18,6 +15,4 @@ __all__ = [
     "find_personal_task_by_title",
     "find_personal_task_by_id",
     "update_personal_task",
-    # Telegram tools
-    "get_messages",
 ]

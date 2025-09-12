@@ -10,13 +10,12 @@ from skills.tools import (
     find_personal_task_by_title,
     find_personal_task_by_id,
     update_personal_task,
-    get_messages,
 )
 
 # prompts
 from .prompts import (
     notion_agent_prompt,
-    telegram_agent_prompt,
+    responder_agent_prompt,
     coordinator_agent_prompt,
 )
 
@@ -49,30 +48,31 @@ class AgentFactory:
 
         return manager_agent
 
-    def create_telegram_agent(self):
-        telegram_agent = Agent(
+    def create_responder_agent(self):
+        responder_agent = Agent(
+            name="telegram",
             model=Gemini(
                 id=self.settings.gemini_pro_model,
                 api_key=self.settings.gemini_api_key,
                 temperature=self.settings.temperature,
                 max_output_tokens=None,
             ),
-            instructions=dedent(telegram_agent_prompt),
-            tools=[get_messages],
+            instructions=dedent(responder_agent_prompt),
+            tools=[],
             show_tool_calls=True,
             add_datetime_to_instructions=True,
             debug_mode=True,
         )
-        return telegram_agent
+        return responder_agent
 
     def create_coordinator_agent(self):
         manager_agent = self.create_manager_agent()
         manager_agent.name = "manager"
         manager_agent.role = ()
 
-        telegram_agent = self.create_telegram_agent()
-        telegram_agent.name = "telegram"
-        telegram_agent.role = ()
+        responder_agent = self.create_responder_agent()
+        responder_agent.name = "responder"
+        responder_agent.role = ()
 
         coordinator_agent = Team(
             name="coordinator",
@@ -83,7 +83,7 @@ class AgentFactory:
                 temperature=self.settings.temperature,
                 max_output_tokens=None,
             ),
-            members=[manager_agent, telegram_agent],
+            members=[manager_agent, responder_agent],
             instructions=dedent(coordinator_agent_prompt),
         )
 
@@ -91,7 +91,9 @@ class AgentFactory:
 
     def get_agent(self, agent_name: str):
         mapper = {
+            "coordinator": self.create_coordinator_agent,
             "manager": self.create_manager_agent,
+            "responder": self.create_responder_agent,
         }
 
         if agent_name not in mapper:
