@@ -21,5 +21,15 @@ def docs():
     return RedirectResponse(url="/docs")
 
 
+@app.get("/")
+def read_root():
+    return {"message": "Hello World from FastAPI on Vercel!"}
+
+
+@app.get("/api/health")
+def health_check():
+    return {"status": "healthy"}
+
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
