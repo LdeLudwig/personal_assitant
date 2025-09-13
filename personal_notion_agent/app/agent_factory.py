@@ -41,8 +41,7 @@ class AgentFactory:
                 find_personal_task_by_id,
                 update_personal_task,
             ],
-            show_tool_calls=True,
-            add_datetime_to_instructions=True,
+            add_datetim_to_context=True,
             debug_mode=True,
         )
 
@@ -59,8 +58,7 @@ class AgentFactory:
             ),
             instructions=dedent(responder_agent_prompt),
             tools=[],
-            show_tool_calls=True,
-            add_datetime_to_instructions=True,
+            add_datetime_to_context=True,
             debug_mode=True,
         )
         return responder_agent
