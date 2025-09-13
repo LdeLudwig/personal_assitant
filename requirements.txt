@@ -1,9 +1,9 @@
-agno==2.0.3
+agno==1.7.1
 annotated-types==0.7.0
 anyio==4.10.0
-awscli==1.42.29
-boto3==1.40.29
-botocore==1.40.29
+awscli==1.42.30
+boto3==1.40.30
+botocore==1.40.30
 cachetools==5.5.2
 certifi==2025.8.3
 cfgv==3.4.0
@@ -39,8 +39,7 @@ markupsafe==3.0.2
 mdurl==0.1.2
 nodeenv==1.9.1
 notion-client==2.5.0
-openai==1.107.1
-packaging==25.0
+openai==1.107.2
 platformdirs==4.4.0
 pre-commit==4.3.0
 pyasn1==0.6.1
