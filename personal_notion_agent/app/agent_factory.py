@@ -6,10 +6,10 @@ from agno.models.google import Gemini
 # tools
 from skills.tools import (
     create_new_tasks,
-    list_personal_tasks,
-    find_personal_task_by_title,
-    find_personal_task_by_id,
-    update_personal_task,
+    list_tasks,
+    find_task_by_title,
+    find_task_by_id,
+    update_task,
 )
 
 # prompts
@@ -35,11 +35,11 @@ class AgentFactory:
             ),
             instructions=dedent(notion_agent_prompt),
             tools=[
-                list_personal_tasks,
+                list_tasks,
                 create_new_tasks,
-                find_personal_task_by_title,
-                find_personal_task_by_id,
-                update_personal_task,
+                find_task_by_title,
+                find_task_by_id,
+                update_task,
             ],
             add_datetim_to_context=True,
             debug_mode=True,
