@@ -1,18 +1,18 @@
-# Personal tasks (Bullet Journal database)
-from .personal_tasks_tools import (
+# Notion Tools
+from .notion_tools import (
     create_new_tasks,
-    list_personal_tasks,
-    find_personal_task_by_title,
-    find_personal_task_by_id,
-    update_personal_task,
+    list_tasks,
+    find_task_by_title,
+    find_task_by_id,
+    update_task,
 )
 
 
 __all__ = [
-    # Personal tasks tools
+    # Notion tools
     "create_new_tasks",
-    "list_personal_tasks",
-    "find_personal_task_by_title",
-    "find_personal_task_by_id",
-    "update_personal_task",
+    "list_tasks",
+    "find_task_by_title",
+    "find_task_by_id",
+    "update_task",
 ]
