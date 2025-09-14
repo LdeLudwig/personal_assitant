@@ -22,6 +22,7 @@ if __name__ == "__main__" or __package__ in (None, ""):
 
 from personal_notion_agent.models.personal_task_models import PersonalTask
 from personal_notion_agent.models.work_task_model import WorkTask
+from personal_notion_agent.models.work_project_model import WorkProject
 
 
 load_dotenv()
@@ -42,7 +43,11 @@ class GroupCategory(Enum):
         "model": PersonalTask,
     }
     WORK = {"database_id": work_tasks_id, "name": "trabalho", "model": WorkTask}
-    PROJECTS = {"database_id": work_projects_id, "name": "projetos", "model": ""}
+    PROJECTS = {
+        "database_id": work_projects_id,
+        "name": "projetos",
+        "model": WorkProject,
+    }
 
 
 def group_identify(group: str):
