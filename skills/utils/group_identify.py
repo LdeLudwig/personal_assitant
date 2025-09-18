@@ -20,16 +20,20 @@ habit_tracker_id = os.getenv("HABIT_TRACKER_ID")
 
 
 class GroupCategory(Enum):
-    PERSONAL = {
-        "database_id": personal_tasks_id,
-        "name": "pessoal",
-        "model": PersonalTask,
-    }
-    WORK = {
-        "database_id": work_tasks_id,
-        "name": "trabalho",
-        "model": WorkTask,
-    }
+    PERSONAL = (
+        {
+            "database_id": personal_tasks_id,
+            "name": "pessoal",
+            "model": PersonalTask,
+        },
+    )
+    WORK = (
+        {
+            "database_id": work_tasks_id,
+            "name": "trabalho",
+            "model": WorkTask,
+        },
+    )
     PROJECTS = (
         {
             "database_id": work_projects_id,
@@ -44,7 +48,6 @@ class GroupCategory(Enum):
             "model": None,
         },
     )
-
     WEEKLY_GOALS = (
         {
             "database_id": weekly_goals_id,
