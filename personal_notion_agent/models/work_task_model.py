@@ -24,6 +24,9 @@ class WorkTask(BaseModel):
     start: Optional[str | date | datetime] = None
     end: Optional[str | date | datetime] = None
 
+    def __init__(self, data: dict):
+        super().__init__(**data)
+
     @model_validator(mode="after")
     def validate_date_order(self):
         start_dt = ensure_sp_aware(self.start)

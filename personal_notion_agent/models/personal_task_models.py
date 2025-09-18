@@ -8,10 +8,13 @@ from skills.utils.datetime_utils import ensure_sp_aware, isoformat_sp
 class PersonalTask(BaseModel):
     name: str
     priority: Optional[Literal["High", "Medium", "Low"]] = None
-    relation: Optional[list[str]] = Field(default_factory=list)
+    work_tasks: Optional[list[str]] = Field(default_factory=list)
     status: Optional[Literal["Paused", "Not started", "In progress", "Done"]] = None
     start: Optional[str | date | datetime] = None
     end: Optional[str | date | datetime] = None
+
+    def __init__(self, data: dict):
+        super().__init__(**data)
 
     @model_validator(mode="after")
     def validate_date_order(self):
@@ -27,8 +30,10 @@ class PersonalTask(BaseModel):
         }
         if self.priority:
             props["Priority"] = {"select": {"name": self.priority}}
-        if self.relation:
-            props["Relation"] = {"relation": [{"id": pid} for pid in self.relation]}
+        if self.work_tasks:
+            props["Work Tasks"] = {
+                "work_tasks": [{"id": pid} for pid in self.work_tasks]
+            }
         if self.status:
             props["Status"] = {"status": {"name": self.status}}
         if self.start or self.end:

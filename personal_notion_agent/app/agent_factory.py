@@ -15,7 +15,7 @@ from skills.tools import (
 # prompts
 from .prompts import (
     notion_agent_prompt,
-    responder_agent_prompt,
+    telegram_agent_prompt,
     coordinator_agent_prompt,
 )
 
@@ -47,8 +47,8 @@ class AgentFactory:
 
         return manager_agent
 
-    def create_responder_agent(self):
-        responder_agent = Agent(
+    def create_telegram_agent(self):
+        telegram_agent = Agent(
             name="telegram",
             model=Gemini(
                 id=self.settings.gemini_pro_model,
@@ -56,21 +56,21 @@ class AgentFactory:
                 temperature=self.settings.temperature,
                 max_output_tokens=None,
             ),
-            instructions=dedent(responder_agent_prompt),
+            instructions=dedent(telegram_agent_prompt),
             tools=[],
             add_datetime_to_instructions=True,
             debug_mode=True,
         )
-        return responder_agent
+        return telegram_agent
 
     def create_coordinator_agent(self):
         manager_agent = self.create_manager_agent()
         manager_agent.name = "manager"
         manager_agent.role = ()
 
-        responder_agent = self.create_responder_agent()
-        responder_agent.name = "responder"
-        responder_agent.role = ()
+        telegram_agent = self.create_telegram_agent()
+        telegram_agent.name = "telegram"
+        telegram_agent.role = ()
 
         coordinator_agent = Team(
             name="coordinator",
@@ -81,7 +81,7 @@ class AgentFactory:
                 temperature=self.settings.temperature,
                 max_output_tokens=None,
             ),
-            members=[manager_agent, responder_agent],
+            members=[manager_agent, telegram_agent],
             instructions=dedent(coordinator_agent_prompt),
         )
 
@@ -91,7 +91,7 @@ class AgentFactory:
         mapper = {
             "coordinator": self.create_coordinator_agent,
             "manager": self.create_manager_agent,
-            "responder": self.create_responder_agent,
+            "telegram": self.create_telegram_agent,
         }
 
         if agent_name not in mapper:
