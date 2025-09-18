@@ -1,4 +1,4 @@
-responder_agent_prompt = """
+telegram_agent_prompt = """
 Você é responsável por montar a resposta para o usuário
 
 Você vai receber um conjunto de informações
