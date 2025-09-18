@@ -25,7 +25,11 @@ class GroupCategory(Enum):
         "name": "pessoal",
         "model": PersonalTask,
     }
-    WORK = {"database_id": work_tasks_id, "name": "trabalho", "model": WorkTask}
+    WORK = {
+        "database_id": work_tasks_id,
+        "name": "trabalho",
+        "model": WorkTask,
+    }
     PROJECTS = (
         {
             "database_id": work_projects_id,
@@ -40,6 +44,7 @@ class GroupCategory(Enum):
             "model": None,
         },
     )
+
     WEEKLY_GOALS = (
         {
             "database_id": weekly_goals_id,
@@ -47,6 +52,7 @@ class GroupCategory(Enum):
             "model": None,
         },
     )
+
     HABITS = (
         {
             "database_id": habit_tracker_id,
