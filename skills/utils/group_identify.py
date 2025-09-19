@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from enum import Enum
 
 # Modelos
-from personal_notion_agent.models.personal_task_models import PersonalTask
+from personal_notion_agent.models.personal_task_model import PersonalTask
 from personal_notion_agent.models.work_task_model import WorkTask
 from personal_notion_agent.models.work_project_model import WorkProject
 
@@ -66,11 +66,25 @@ class GroupCategory(Enum):
 
 
 def group_identify(group: str):
+    """
+    Identifica o grupo de banco de dados com base no nome informado.
+
+    Args:
+        group (str): Nome do grupo a ser identificado.
+
+    Returns:
+        dict: Dicionário com as informações do grupo identificado.
+    """
     # Reconhecimento do grupos por regex
     recognition = {
         GroupCategory.PERSONAL: [r"[Pp]essoal", r"[Pp]essoais", r"[Pp]ersonal"],
         GroupCategory.WORK: [r"[Tt]rabalho"],
-        GroupCategory.PROJECTS: [r"[Pp]rojeto", r"[Pp]rojetos", r"[Pp]roject"],
+        GroupCategory.PROJECTS: [
+            r"[Pp]rojeto",
+            r"[Pp]rojetos",
+            r"[Pp]roject",
+            r"[Pp]rojects",
+        ],
     }
 
     try:
