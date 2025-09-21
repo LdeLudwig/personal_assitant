@@ -35,12 +35,13 @@ async def notion_manager(request: Request, settings=Depends(get_settings)):
 
 
 @manager.get("/test_manager")
-async def test(request: str, settings=Depends(get_settings)):
+async def test(request: str, chat_id: str, settings=Depends(get_settings)):
     try:
         coordinator = settings.agent_factory.get_agent("coordinator")
 
         final_prompt = f"""
             Originalmente o usuário requisitou: {request}
+            O chat_id do usuário é: {chat_id}
         """
         response = await coordinator.arun(final_prompt)
         print(f"Resposta do agent: {response.content}")
