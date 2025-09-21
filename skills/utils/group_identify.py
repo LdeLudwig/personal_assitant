@@ -20,49 +20,36 @@ habit_tracker_id = os.getenv("HABIT_TRACKER_ID")
 
 
 class GroupCategory(Enum):
-    PERSONAL = (
-        {
-            "database_id": personal_tasks_id,
-            "name": "pessoal",
-            "model": PersonalTask,
-        },
-    )
-    WORK = (
-        {
-            "database_id": work_tasks_id,
-            "name": "trabalho",
-            "model": WorkTask,
-        },
-    )
-    PROJECTS = (
-        {
-            "database_id": work_projects_id,
-            "name": "projetos",
-            "model": WorkProject,
-        },
-    )
-    MONTHLY_GOALS = (
-        {
-            "database_id": monthly_goals_id,
-            "name": "meta mensal",
-            "model": None,
-        },
-    )
-    WEEKLY_GOALS = (
-        {
-            "database_id": weekly_goals_id,
-            "name": "meta semanal",
-            "model": None,
-        },
-    )
-
-    HABITS = (
-        {
-            "database_id": habit_tracker_id,
-            "name": "habit tracker",
-            "model": None,
-        },
-    )
+    PERSONAL = {
+        "database_id": personal_tasks_id,
+        "name": "pessoal",
+        "model": PersonalTask,
+    }
+    WORK = {
+        "database_id": work_tasks_id,
+        "name": "trabalho",
+        "model": WorkTask,
+    }
+    PROJECTS = {
+        "database_id": work_projects_id,
+        "name": "projetos",
+        "model": WorkProject,
+    }
+    MONTHLY_GOALS = {
+        "database_id": monthly_goals_id,
+        "name": "meta mensal",
+        "model": None,
+    }
+    WEEKLY_GOALS = {
+        "database_id": weekly_goals_id,
+        "name": "meta semanal",
+        "model": None,
+    }
+    HABITS = {
+        "database_id": habit_tracker_id,
+        "name": "habit tracker",
+        "model": None,
+    }
 
 
 def group_identify(group: str):

@@ -1,7 +1,9 @@
 from textwrap import dedent
 from agno.agent import Agent
 from agno.team import Team
-from agno.models.google import Gemini
+
+# from agno.models.google import Gemini
+from agno.models.openrouter import OpenRouter
 
 # tools
 from skills.tools import (
@@ -10,6 +12,8 @@ from skills.tools import (
     find_task_by_title,
     find_task_by_id,
     update_task,
+    reply,
+    get_models,
 )
 
 # prompts
@@ -27,11 +31,11 @@ class AgentFactory:
     def create_manager_agent(self):
         manager_agent = Agent(
             name="manager",
-            model=Gemini(
-                id=self.settings.gemini_pro_model,
-                api_key=self.settings.gemini_api_key,
+            model=OpenRouter(
+                id=self.settings.gemini_pro_model_or,
+                api_key=self.settings.open_router_api_key,
                 temperature=self.settings.temperature,
-                max_output_tokens=None,
+                max_tokens=None,
             ),
             instructions=dedent(notion_agent_prompt),
             tools=[
@@ -43,6 +47,7 @@ class AgentFactory:
             ],
             add_datetime_to_instructions=True,
             debug_mode=True,
+            show_tool_calls=True,
         )
 
         return manager_agent
@@ -50,39 +55,42 @@ class AgentFactory:
     def create_telegram_agent(self):
         telegram_agent = Agent(
             name="telegram",
-            model=Gemini(
-                id=self.settings.gemini_pro_model,
-                api_key=self.settings.gemini_api_key,
+            model=OpenRouter(
+                id=self.settings.gemini_flash_model_or,
+                api_key=self.settings.open_router_api_key,
                 temperature=self.settings.temperature,
-                max_output_tokens=None,
+                max_tokens=None,
             ),
             instructions=dedent(telegram_agent_prompt),
-            tools=[],
+            tools=[reply, get_models],
             add_datetime_to_instructions=True,
             debug_mode=True,
+            show_tool_calls=True,
         )
         return telegram_agent
 
     def create_coordinator_agent(self):
         manager_agent = self.create_manager_agent()
         manager_agent.name = "manager"
-        manager_agent.role = ()
+        manager_agent.role = "Gerenciar as tarefas e projetos no Notion"
 
         telegram_agent = self.create_telegram_agent()
         telegram_agent.name = "telegram"
-        telegram_agent.role = ()
+        telegram_agent.role = "Responder ao usuário no Telegram"
 
         coordinator_agent = Team(
             name="coordinator",
             mode="coordinate",
-            model=Gemini(
-                id=self.settings.gemini_pro_model,
-                api_key=self.settings.gemini_api_key,
+            model=OpenRouter(
+                id=self.settings.gemini_pro_model_or,
+                api_key=self.settings.open_router_api_key,
                 temperature=self.settings.temperature,
-                max_output_tokens=None,
+                max_tokens=None,
             ),
             members=[manager_agent, telegram_agent],
             instructions=dedent(coordinator_agent_prompt),
+            debug_mode=True,
+            show_tool_calls=True,
         )
 
         return coordinator_agent

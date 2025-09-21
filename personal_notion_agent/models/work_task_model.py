@@ -7,7 +7,7 @@ from skills.utils.datetime_utils import ensure_sp_aware, isoformat_sp
 
 class WorkTask(BaseModel):
     name: str
-    project: list[str] = Field(default_factory=list)
+    project: str = Field(default_factory=str)
     priority: Optional[Literal["High", "Medium", "Low"]] = None
     status: Optional[
         Literal[
@@ -39,7 +39,7 @@ class WorkTask(BaseModel):
         props: dict = {
             "Name": {"title": [{"text": {"content": self.name}}]},
         }
-        props["Project"] = {"relation": [{"id": pid} for pid in self.relation]}
+        props["Project"] = {"relation": {"id": self.project}}
         if self.priority:
             props["Priority"] = {"select": {"name": self.priority}}
         if self.status:
