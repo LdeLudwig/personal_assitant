@@ -10,7 +10,6 @@ load_dotenv()
 app = FastAPI(title="Notion Manager Bot")
 
 setup_cors(app)
-print("CORS configurado com sucesso")
 
 app.include_router(manager, tags=["Manager"], prefix="/manager")
 

@@ -1,4 +1,3 @@
-import telegram
 from fastapi import APIRouter, Depends, Request
 from telegram import Update
 from personal_notion_agent.infrastructure.settings import get_settings
@@ -12,9 +11,6 @@ async def notion_manager(request: Request, settings=Depends(get_settings)):
         payload_dict = await request.json()
 
         update = Update.de_json(payload_dict, None)
-
-        bot = telegram.Bot(settings.telegram_api_key)
-
         message = update.message.text
         chat_id = update.message.chat_id
 
@@ -22,17 +18,16 @@ async def notion_manager(request: Request, settings=Depends(get_settings)):
             print("Received an update without a message text.")
             return {"status": "ignored", "message": "No message"}
 
-        print(f"Processing prompt for chat_id: {chat_id}")
-        agent = settings.agent_factory.get_agent("manager")
+        coordinator = settings.agent_factory.get_agent("coordinator")
 
         final_prompt = f"""
             Originalmente o usuário requisitou: {message}
+            O chat_id do usuário é: {chat_id}
+            
         """
+        response = await coordinator.arun(final_prompt)
+        print(f"Resposta do coordinator: {response.content}")
 
-        response = await agent.arun(final_prompt)
-        print(f"Agent response: {response.content}")
-
-        await bot.send_message(text=response.content, chat_id=chat_id)
     except Exception as e:
         print(f"An error occurred: {e}")
 
@@ -42,13 +37,12 @@ async def notion_manager(request: Request, settings=Depends(get_settings)):
 @manager.get("/test_manager")
 async def test(request: str, settings=Depends(get_settings)):
     try:
-        agent = settings.agent_factory.get_agent("manager")
+        coordinator = settings.agent_factory.get_agent("coordinator")
 
         final_prompt = f"""
             Originalmente o usuário requisitou: {request}
         """
-
-        response = await agent.arun(final_prompt)
+        response = await coordinator.arun(final_prompt)
         print(f"Resposta do agent: {response.content}")
     except Exception as e:
         print(f"An error occurred: {e}")
