@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, Request
-from telegram import Bot
-from telegram import Update
+from telegram import Bot, Update
+from telegram.request import HTTPXRequest
 from personal_notion_agent.infrastructure.settings import get_settings
 
 manager = APIRouter()
 
 settings = get_settings()
-
-bot = Bot(settings.telegram_api_key)
+trequest = HTTPXRequest(connection_pool_size=50)
+bot = Bot(settings.telegram_api_key, request=trequest)
 
 
 @manager.post("/")
