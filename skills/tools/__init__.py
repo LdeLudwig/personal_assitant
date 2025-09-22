@@ -7,7 +7,7 @@ from .notion_tools import (
     update_task,
 )
 
-from .telegram_tools import reply, get_models
+from .telegram_tools import get_models
 
 
 __all__ = [
@@ -18,6 +18,5 @@ __all__ = [
     "find_task_by_id",
     "update_task",
     # Telegram tools
-    "reply",
     "get_models",
 ]

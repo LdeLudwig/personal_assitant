@@ -8,7 +8,7 @@ from skills.utils.datetime_utils import ensure_sp_aware, isoformat_sp
 class WorkProject(BaseModel):
     name: str
     priority: Optional[Literal["High", "Medium", "Low"]] = None
-    tag: Optional[Literal["Consultant", "College", "Personal", "Agilize"]] = None
+    tag: Optional[Literal["Consultant", "College", "Personal", "Agilize"]] | str = None
     status: Optional[
         Literal[
             "Not started",

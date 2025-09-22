@@ -1,8 +1,13 @@
 from fastapi import APIRouter, Depends, Request
+from telegram import Bot
 from telegram import Update
 from personal_notion_agent.infrastructure.settings import get_settings
 
 manager = APIRouter()
+
+settings = get_settings()
+
+bot = Bot(settings.telegram_api_key)
 
 
 @manager.post("/")
@@ -21,12 +26,12 @@ async def notion_manager(request: Request, settings=Depends(get_settings)):
         coordinator = settings.agent_factory.get_agent("coordinator")
 
         final_prompt = f"""
-            Originalmente o usuário requisitou: {message}
-            O chat_id do usuário é: {chat_id}
-            
+            Originalmente o usuário requisitou: {message}            
         """
         response = await coordinator.arun(final_prompt)
         print(f"Resposta do coordinator: {response.content}")
+
+        await bot.send_message(chat_id=chat_id, text=response.content)
 
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -41,9 +46,10 @@ async def test(request: str, chat_id: str, settings=Depends(get_settings)):
 
         final_prompt = f"""
             Originalmente o usuário requisitou: {request}
-            O chat_id do usuário é: {chat_id}
         """
         response = await coordinator.arun(final_prompt)
+
+        await bot.send_message(chat_id=chat_id, text=response.content)
         print(f"Resposta do agent: {response.content}")
     except Exception as e:
         print(f"An error occurred: {e}")
