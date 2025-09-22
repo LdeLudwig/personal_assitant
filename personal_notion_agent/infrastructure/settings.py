@@ -19,8 +19,18 @@ class Settings(BaseModel):
     # telegram
     telegram_api_key: str = Field(default_factory=lambda: os.getenv("TELEGRAM_API_KEY"))
 
-    # Model
-    gemini_pro_model: str = Field(default_factory=lambda: os.getenv("GIMINI_PRO_MODEL"))
+    # Models
+    gemini_pro_model: str = Field(default_factory=lambda: os.getenv("GEMINI_PRO_MODEL"))
+    gemini_flash_model: str = Field(
+        default_factory=lambda: os.getenv("GEMINI_FLASH_MODEL")
+    )
+
+    gemini_pro_model_or: str = Field(
+        default_factory=lambda: os.getenv("GEMINI_PRO_MODEL_OR")
+    )
+    gemini_flash_model_or: str = Field(
+        default_factory=lambda: os.getenv("GEMINI_FLASH_MODEL_OR")
+    )
 
     # Temperature
     temperature: float = Field(default_factory=lambda: float(os.getenv("TEMPERATURE")))

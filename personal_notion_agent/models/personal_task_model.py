@@ -9,7 +9,9 @@ class PersonalTask(BaseModel):
     name: str
     priority: Optional[Literal["High", "Medium", "Low"]] = None
     work_tasks: Optional[list[str]] = Field(default_factory=list)
-    status: Optional[Literal["Paused", "Not started", "In progress", "Done"]] = None
+    status: Optional[
+        Literal["Paused", "Not started", "In progress", "Done", "Undone"]
+    ] = None
     start: Optional[str | date | datetime] = None
     end: Optional[str | date | datetime] = None
 
